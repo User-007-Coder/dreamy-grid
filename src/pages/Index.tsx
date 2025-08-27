@@ -6,11 +6,15 @@ import PremiumBackgroundEffects from "@/components/PremiumBackgroundEffects";
 import HomePage from "./HomePage";
 import GalleryPage from "./GalleryPage";
 import CategoriesPage from "./CategoriesPage";
+import FavoritesPage from "./FavoritesPage";
+import DownloadsPage from "./DownloadsPage";
+import SettingsPage from "./SettingsPage";
 
 const Index = () => {
   const [showIntro, setShowIntro] = useState(true);
   const [currentSection, setCurrentSection] = useState("home");
   const [isLoaded, setIsLoaded] = useState(false);
+  const [currentCategory, setCurrentCategory] = useState("desktop");
 
   useEffect(() => {
     // Check if user has seen intro before
@@ -19,6 +23,31 @@ const Index = () => {
       setShowIntro(false);
     }
     setIsLoaded(true);
+
+    // Listen for navigation events
+    const handleNavigate = (event: CustomEvent) => {
+      setCurrentSection(event.detail);
+    };
+
+    const handleCategoryChange = (event: CustomEvent) => {
+      setCurrentCategory(event.detail);
+    };
+
+    const handleShowToast = (event: CustomEvent) => {
+      // You can integrate with a toast library here
+      console.log('Toast:', event.detail);
+      alert(event.detail.message); // Temporary solution
+    };
+
+    window.addEventListener('navigate', handleNavigate as EventListener);
+    window.addEventListener('setCategory', handleCategoryChange as EventListener);
+    window.addEventListener('showToast', handleShowToast as EventListener);
+
+    return () => {
+      window.removeEventListener('navigate', handleNavigate as EventListener);
+      window.removeEventListener('setCategory', handleCategoryChange as EventListener);
+      window.removeEventListener('showToast', handleShowToast as EventListener);
+    };
   }, []);
 
   const handleIntroComplete = () => {
@@ -31,60 +60,15 @@ const Index = () => {
       case "home":
         return <HomePage />;
       case "gallery":
-        return <GalleryPage />;
+        return <GalleryPage currentCategory={currentCategory} onCategoryChange={setCurrentCategory} />;
       case "categories":
         return <CategoriesPage />;
       case "favorites":
-        return (
-          <div className="min-h-screen py-20 px-6 flex items-center justify-center">
-            <motion.div
-              className="text-center glass-card p-12 rounded-2xl"
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-            >
-              <h2 className="font-space text-4xl font-bold bg-gradient-primary bg-clip-text text-transparent mb-4">
-                Favorites
-              </h2>
-              <p className="text-muted-foreground font-poppins">
-                Your favorite wallpapers will appear here
-              </p>
-            </motion.div>
-          </div>
-        );
+        return <FavoritesPage />;
       case "downloads":
-        return (
-          <div className="min-h-screen py-20 px-6 flex items-center justify-center">
-            <motion.div
-              className="text-center glass-card p-12 rounded-2xl"
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-            >
-              <h2 className="font-space text-4xl font-bold bg-gradient-primary bg-clip-text text-transparent mb-4">
-                Downloads
-              </h2>
-              <p className="text-muted-foreground font-poppins">
-                Your download history will be tracked here
-              </p>
-            </motion.div>
-          </div>
-        );
+        return <DownloadsPage />;
       case "settings":
-        return (
-          <div className="min-h-screen py-20 px-6 flex items-center justify-center">
-            <motion.div
-              className="text-center glass-card p-12 rounded-2xl"
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-            >
-              <h2 className="font-space text-4xl font-bold bg-gradient-primary bg-clip-text text-transparent mb-4">
-                Settings
-              </h2>
-              <p className="text-muted-foreground font-poppins">
-                Customize your experience here
-              </p>
-            </motion.div>
-          </div>
-        );
+        return <SettingsPage />;
       default:
         return <HomePage />;
     }

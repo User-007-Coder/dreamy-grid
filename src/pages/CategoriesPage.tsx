@@ -129,6 +129,10 @@ const CategoriesPage = () => {
 
                 {/* Explore Button */}
                 <motion.button
+                  onClick={() => {
+                    window.dispatchEvent(new CustomEvent('navigate', { detail: 'gallery' }));
+                    window.dispatchEvent(new CustomEvent('setCategory', { detail: category.id }));
+                  }}
                   className="w-full mt-6 glass-button py-3 rounded-xl font-poppins font-semibold text-primary hover:text-white transition-all duration-300"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
@@ -175,6 +179,11 @@ const CategoriesPage = () => {
               Request custom categories or suggest new collections. We're always expanding our library!
             </p>
             <motion.button
+              onClick={() => {
+                window.dispatchEvent(new CustomEvent('showToast', { 
+                  detail: { message: 'Feature coming soon! Stay tuned.', type: 'info' }
+                }));
+              }}
               className="glass-button px-8 py-4 rounded-full font-space font-semibold text-lg text-primary hover:text-white transition-all duration-500"
               whileHover={{ 
                 scale: 1.05,

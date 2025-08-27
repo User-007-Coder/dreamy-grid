@@ -68,6 +68,7 @@ const HomePage = () => {
 
           {/* CTA Button */}
           <motion.button
+            onClick={() => window.dispatchEvent(new CustomEvent('navigate', { detail: 'gallery' }))}
             className="glass-button px-8 py-4 rounded-full font-space font-semibold text-lg text-primary hover:text-white transition-all duration-500"
             whileHover={{ 
               scale: 1.05,

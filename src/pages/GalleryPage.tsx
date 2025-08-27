@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import CategoryTabs from "@/components/CategoryTabs";
 import WallpaperCard from "@/components/WallpaperCard";
@@ -29,8 +29,20 @@ const categories = [
 
 type CategoryKey = keyof typeof wallpaperData;
 
-const GalleryPage = () => {
-  const [activeCategory, setActiveCategory] = useState<CategoryKey>("desktop");
+interface GalleryPageProps {
+  currentCategory?: string;
+  onCategoryChange?: (category: string) => void;
+}
+
+const GalleryPage = ({ currentCategory = "desktop", onCategoryChange }: GalleryPageProps) => {
+  const [activeCategory, setActiveCategory] = useState<CategoryKey>(currentCategory as CategoryKey);
+  
+  // Update active category when prop changes
+  React.useEffect(() => {
+    if (currentCategory && currentCategory !== activeCategory) {
+      setActiveCategory(currentCategory as CategoryKey);
+    }
+  }, [currentCategory, activeCategory]);
   
   const currentImages = useMemo(() => 
     wallpaperData[activeCategory], 
@@ -94,7 +106,10 @@ const GalleryPage = () => {
         >
           <CategoryTabs
             value={activeCategory}
-            onChange={(category) => setActiveCategory(category as CategoryKey)}
+            onChange={(category) => {
+              setActiveCategory(category as CategoryKey);
+              onCategoryChange?.(category);
+            }}
             categories={categories}
           />
         </motion.div>
@@ -136,6 +151,13 @@ const GalleryPage = () => {
           transition={{ delay: 1 }}
         >
           <motion.button
+            onClick={() => {
+              // Simulate loading more wallpapers
+              const event = new CustomEvent('showToast', { 
+                detail: { message: 'Loading more wallpapers...', type: 'info' }
+              });
+              window.dispatchEvent(event);
+            }}
             className="glass-button px-8 py-4 rounded-full font-space font-semibold text-lg text-primary hover:text-white transition-all duration-500"
             whileHover={{ 
               scale: 1.05,
