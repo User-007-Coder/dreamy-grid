@@ -208,6 +208,11 @@
     @apply scale-[1.02] -translate-y-1;
     box-shadow: var(--shadow-glow);
   }
+  
+  /* Image Loading Effect */
+  .image-loading {
+    @apply bg-gradient-to-r from-muted via-muted-foreground/20 to-muted animate-pulse;
+  }
 }
 
 @keyframes float {
